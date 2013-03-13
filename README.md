@@ -1,6 +1,9 @@
-# Wtforum
+# WTForum
 
-TODO: Write a gem description
+Ruby library that wraps Website Toolbox's Forum API.
+
+Useful for folks looking to embed the forum into their site, while maintaining
+a user-facing appearance of a single user account.
 
 ## Installation
 
@@ -16,9 +19,51 @@ Or install it yourself as:
 
     $ gem install wtforum
 
-## Usage
+## Features
 
-TODO: Write usage instructions here
+    WTForum has the following features:
+
+    * CRUD (create, read, update, & delete) user accounts
+      ```ruby
+      # modeled after ActiveRecord API
+      user = WTForum::User.create username: "wtforum_test_user", email: "wtforum_test_user@example.com"
+      user = WTForum::User.find(user.id)
+      user.update_attributes! username: "wtforum_test_user_2", email: "wtforum_test_user_2@example.com"
+      user.destroy
+      ```
+
+    * Log in your user via their Single Sign On (SSO) API
+      ```ruby
+      session = WTForum::Session.create(user.id)
+      session.token # => REiB6U5SkxB
+      ```
+
+## Configuration
+
+    Before using WTForum, you need to give it administrator credentials. It
+    needs four pieces of information:
+    1) Where the forum is hosted.
+    2) The API key that Website Toolbox provides.
+    3) Username of an admin account.
+    4) Password for said admin account.
+
+    Example Rails config:
+    ```ruby
+    # config/initializers/wtforum_credentials.rb
+    WTForum.domain = "forum.example.com"
+    WTForum.api_key = "TEgPYR4Zapz"
+    WTForum.admin_username = "__admin_api_dont_delete__"
+    WTForum.admin_password = "s0m3p4ssw0rd"
+    ```
+
+## Why do we need to specify an admin user account in the credentials?
+
+    Unfortunately, Website Toolbox's Forum API is missing some functionality.
+    Specifically, you can only create a new forum user account. Need to read,
+    update, or delete an existing user via the API? You're out of luck! As a
+    workaround, this library uses an admin account and Mechanize to sign into
+    the website and manually fill out forms and screenscrape the results. I hope
+    that the API's breadth of functionality improves in the future.
 
 ## Contributing
 

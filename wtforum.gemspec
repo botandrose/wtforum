@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = WTForum::VERSION
   spec.authors       = ["Micah Geisel"]
   spec.email         = ["micah@botandrose.com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
-  spec.homepage      = ""
+  spec.description   = %q{Ruby library that wraps Website Toolbox's forum API.}
+  spec.summary       = %q{Ruby library that wraps Website Toolbox's forum API.}
+  spec.homepage      = "https://github.com/botandrose/wtforum"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
