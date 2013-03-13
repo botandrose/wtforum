@@ -40,6 +40,7 @@ WTForum has the following features:
 
 Before using WTForum, you need to give it administrator credentials. It
 needs four pieces of information:
+
 1. Where the forum is hosted.
 2. The API key that Website Toolbox provides.
 3. Username of an admin account.
