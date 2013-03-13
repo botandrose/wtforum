@@ -23,7 +23,7 @@ Or install it yourself as:
 
 WTForum has the following features:
 
-* CRUD (create, read, update, & delete) user accounts
+### CRUD (create, read, update, & delete) user accounts
 
     # modeled after ActiveRecord API
     user = WTForum::User.create username: "wtforum_test_user", email: "wtforum_test_user@example.com"
@@ -31,7 +31,7 @@ WTForum has the following features:
     user.update_attributes! username: "wtforum_test_user_2", email: "wtforum_test_user_2@example.com"
     user.destroy
 
-* Log in your user via their Single Sign On (SSO) API
+### Log in your user via their Single Sign On (SSO) API
 
     session = WTForum::Session.create(user.id)
     session.token # => REiB6U5SkxB
