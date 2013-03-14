@@ -31,6 +31,23 @@ module WTForum
       new(attributes)
     end
 
+    def self.find_by_username username
+      page = authorized_agent.get(find_by_username_uri(username))
+      body = Nokogiri::HTML.parse(page.body)
+
+      # scrape markup: <a href="/profile/1234567" title="View profile">username\t\n</a>
+      # search returns partial matches :( so find the exact match.
+      # hopefully there aren't more than 50 matches!
+      link = body.css("a[title='View profile']:contains('#{username}')").find do |a|
+        a.text.strip == username
+      end
+
+      link or raise NotFound
+
+      id = link["href"].split("/").last
+      find id
+    end
+
     def self.update user_id, attributes
       find(user_id).update_attributes!(attributes)
     end
@@ -120,6 +137,13 @@ module WTForum
       uri = WTForum.base_uri
       uri.path = "/register/register"
       uri.query = "edit=1&userid=#{user_id}"
+      uri
+    end
+
+    def self.find_by_username_uri username
+      uri = WTForum.base_uri
+      uri.path = "/register"
+      uri.query = "action=members&search=true&s_username=#{username}"
       uri
     end
 

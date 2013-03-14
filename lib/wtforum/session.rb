@@ -5,7 +5,7 @@ module WTForum
     def self.create user_id
       uri = create_uri(user_id)
       page = Mechanize.new.get(uri)
-      auth_token = WTForum.extract_value(:authtoken, :from => page.body)
+      auth_token = WTForum.extract_value(:authtoken, from: page.body)
       new(auth_token)
     end
 

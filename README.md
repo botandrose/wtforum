@@ -26,8 +26,10 @@ WTForum has the following features:
 ### CRUD (create, read, update, & delete) user accounts
 
     # modeled after ActiveRecord API
+    WTForum::User.count
     user = WTForum::User.create username: "wtforum_test_user", email: "wtforum_test_user@example.com"
     user = WTForum::User.find(user.id)
+      user = WTForum::User.find_by_username(user.username)
     user.update_attributes! username: "wtforum_test_user_2", email: "wtforum_test_user_2@example.com"
     user.destroy
 

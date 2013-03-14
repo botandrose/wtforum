@@ -17,7 +17,7 @@ describe WTForum::User do
 
       user.update_attributes! username: "wtforum_test_user_2", email: "wtforum_test_user_2@example.com"
 
-      user = WTForum::User.find(user.id)
+      user = WTForum::User.find_by_username("wtforum_test_user_2")
       user.username.should == "wtforum_test_user_2"
       user.email.should == "wtforum_test_user_2@example.com"
 
