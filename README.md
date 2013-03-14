@@ -23,14 +23,23 @@ Or install it yourself as:
 
 WTForum has the following features:
 
-### CRUD (create, read, update, & delete) user accounts
+### CRUD user accounts
 
-    # modeled after ActiveRecord API
-    WTForum::User.count
+    # Modeled after ActiveRecord API
+
+    # Create
     user = WTForum::User.create username: "wtforum_test_user", email: "wtforum_test_user@example.com"
+
+    # Read
+    WTForum::User.count
     user = WTForum::User.find(user.id)
-      user = WTForum::User.find_by_username(user.username)
+    user = WTForum::User.find_by_username(user.username)
+
+    # Update
     user.update_attributes! username: "wtforum_test_user_2", email: "wtforum_test_user_2@example.com"
+
+    # Destroy
+    WTForum::User.destroy(user.id)
     user.destroy
 
 ### Log in your user via their Single Sign On (SSO) API
