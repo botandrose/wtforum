@@ -23,7 +23,7 @@ describe WTForum::User do
 
     ensure
       lambda {
-        user.destroy
+        WTForum::User.destroy(user.id)
       }.should change(WTForum::User, :count).by(-1)
     end
   end

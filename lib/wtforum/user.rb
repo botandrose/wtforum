@@ -52,8 +52,8 @@ module WTForum
       find(user_id).update_attributes!(attributes)
     end
 
-    def self.delete user_id
-      authorized_agent.get delete_uri(user_id)
+    def self.destroy user_id
+      authorized_agent.get destroy_uri(user_id)
       true
     end
 
@@ -86,7 +86,7 @@ module WTForum
     end
 
     def destroy
-      self.class.delete id
+      self.class.destroy id
     end
 
     attr_accessor :id, :member, :email
@@ -167,7 +167,7 @@ module WTForum
       uri
     end
 
-    def self.delete_uri user_id
+    def self.destroy_uri user_id
       uri = WTForum.base_uri
       uri.path = "/register/delete"
       uri.query = "mem_userid=#{user_id}"
