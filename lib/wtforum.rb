@@ -9,6 +9,8 @@ require "wtforum/user"
 require "wtforum/session"
 
 module WTForum
+  class WTForumError < StandardError; end
+
   class << self
     attr_accessor :domain, :api_key, :admin_username, :admin_password
 
@@ -29,7 +31,7 @@ module WTForum
       if node.present?
         node.text
       else
-        raise xml.css("error, .errorMsg").text
+        raise WTForumError, xml.css("errormessage, error, .errorMsg").text
       end
     end
   end

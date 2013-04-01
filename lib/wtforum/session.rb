@@ -7,6 +7,12 @@ module WTForum
       page = Mechanize.new.get(uri)
       auth_token = WTForum.extract_value(:authtoken, from: page.body)
       new(auth_token)
+    rescue WTForumError => e
+      if e.message == "Error: The specified user does not exist."
+        raise WTForum::User::NotFound
+      else
+        raise
+      end
     end
 
     def initialize token
