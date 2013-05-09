@@ -10,6 +10,7 @@ module WTForum
       defaults = { pw: SecureRandom.hex(10) }
       attributes[:member] ||= attributes.delete(:username)
       attributes[:field276177] ||= attributes.delete(:gender)
+      attributes[:field276178] ||= attributes.delete(:location)
       attributes[:field276179] ||= attributes.delete(:about)
       attributes.reverse_merge! defaults
       uri = create_uri attributes
@@ -29,8 +30,10 @@ module WTForum
         id: user_id,
         member: body.css(".tables td:contains('Username:') + td input").first["value"],
         email: body.css(".tables td:contains('Email Address:') + td").first.text.split(" - ").first,
-        field276177: body.css(".tables td:contains('Gender:') + td option[selected]").first.try(:text),
-        field276179: body.css(".tables td:contains('About Me:') + td textarea").first.text
+        name: body.css(".tables td:contains('Full Name:') + td input").first["value"],
+        field276177: body.css(".tables select[name='field276177'] option[selected]").first.try(:text),
+        field276178: body.css(".tables input[name='field276178']").first["value"],
+        field276179: body.css(".tables textarea[name='field276179']").first.text
       }
       new(attributes)
     end
@@ -79,7 +82,9 @@ module WTForum
     def save!
       self.class.authorized_agent.get(self.class.edit_uri(id)) do |page|
         form = page.forms.first
+        form["name"] = name
         form["field276177"] = field276177
+        form["field276178"] = field276178
         form["field276179"] = field276179
         form.submit
       end
@@ -99,7 +104,7 @@ module WTForum
       self.class.destroy id
     end
 
-    attr_accessor :id, :member, :email, :field276177, :field276179
+    attr_accessor :id, :member, :email, :name, :field276177, :field276178, :field276179
     attr_writer :pw, :apikey
 
     def username
@@ -116,6 +121,14 @@ module WTForum
 
     def gender= value
       self.field276177 = value
+    end
+
+    def location
+      field276178
+    end
+
+    def location= value
+      self.field276178 = value
     end
 
     def about

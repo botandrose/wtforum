@@ -8,21 +8,37 @@ describe WTForum::User do
       user = nil
 
       lambda {
-        user = WTForum::User.create username: "wtforum_test_user", email: "wtforum_test_user@example.com", gender: "Male", about: "I am a test user"
+        user = WTForum::User.create(
+          username: "wtforum_test_user",
+          email: "wtforum_test_user@example.com",
+          name: "Test User",
+          gender: "Male",
+          location: "Portland, Oregon, USA",
+          about: "I am a test user")
       }.should change(WTForum::User, :count).by(1)
 
       user = WTForum::User.find(user.id)
       user.username.should == "wtforum_test_user"
       user.email.should == "wtforum_test_user@example.com"
+      user.name.should == "Test User"
       user.gender.should == "Male"
+      user.location.should == "Portland, Oregon, USA"
       user.about.should == "I am a test user"
 
-      user.update_attributes! username: "wtforum_test_user_2", email: "wtforum_test_user_2@example.com", gender: "Female", about: "I am an updated test user"
+      user.update_attributes!(
+        username: "wtforum_test_user_2",
+        email: "wtforum_test_user_2@example.com",
+        name: "Test User 2",
+        gender: "Female",
+        location: "Vancouver, BC, Canada",
+        about: "I am an updated test user")
 
       user = WTForum::User.find_by_username("wtforum_test_user_2")
       user.username.should == "wtforum_test_user_2"
       user.email.should == "wtforum_test_user_2@example.com"
+      user.name.should == "Test User 2"
       user.gender.should == "Female"
+      user.location.should == "Vancouver, BC, Canada"
       user.about.should == "I am an updated test user"
 
     ensure
