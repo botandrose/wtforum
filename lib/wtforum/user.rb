@@ -9,6 +9,8 @@ module WTForum
     def self.create attributes
       defaults = { pw: SecureRandom.hex(10) }
       attributes[:member] ||= attributes.delete(:username)
+      attributes[:field276177] ||= attributes.delete(:gender)
+      attributes[:field276179] ||= attributes.delete(:about)
       attributes.reverse_merge! defaults
       uri = create_uri attributes
 
@@ -27,6 +29,8 @@ module WTForum
         id: user_id,
         member: body.css(".tables td:contains('Username:') + td input").first["value"],
         email: body.css(".tables td:contains('Email Address:') + td").first.text.split(" - ").first,
+        field276177: body.css(".tables td:contains('Gender:') + td option[selected]").first.try(:text),
+        field276179: body.css(".tables td:contains('About Me:') + td textarea").first.text
       }
       new(attributes)
     end
@@ -73,6 +77,12 @@ module WTForum
     end
 
     def save!
+      self.class.authorized_agent.get(self.class.edit_uri(id)) do |page|
+        form = page.forms.first
+        form["field276177"] = field276177
+        form["field276179"] = field276179
+        form.submit
+      end
       self.class.authorized_agent.get(self.class.edit_username_uri(id)) do |page|
         form = page.forms.first
         form["new_username"] = username
@@ -89,7 +99,7 @@ module WTForum
       self.class.destroy id
     end
 
-    attr_accessor :id, :member, :email
+    attr_accessor :id, :member, :email, :field276177, :field276179
     attr_writer :pw, :apikey
 
     def username
@@ -98,6 +108,22 @@ module WTForum
 
     def username= value
       self.member = value
+    end
+
+    def gender
+      field276177
+    end
+
+    def gender= value
+      self.field276177 = value
+    end
+
+    def about
+      field276179
+    end
+
+    def about= value
+      self.field276179 = value
     end
 
     private
@@ -145,6 +171,10 @@ module WTForum
       uri.path = "/register"
       uri.query = "action=members&search=true&s_username=#{username}"
       uri
+    end
+
+    def self.edit_uri user_id
+      find_uri user_id
     end
 
     def self.edit_username_uri user_id
