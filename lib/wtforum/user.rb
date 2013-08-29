@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 require "securerandom"
 
 module WTForum
@@ -218,3 +216,4 @@ module WTForum
     end
   end
 end
+

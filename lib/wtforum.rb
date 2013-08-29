@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 require "uri"
 require "active_support/core_ext/object"
 require "mechanize"
@@ -36,3 +34,4 @@ module WTForum
     end
   end
 end
+

@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 require "spec_helper"
 
 describe WTForum::User do
@@ -56,3 +54,4 @@ describe WTForum::User do
     }.should raise_exception(WTForum::User::NotFound)
   end
 end
+

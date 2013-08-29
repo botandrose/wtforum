@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 require "spec_helper"
 
 describe WTForum::Session do
@@ -23,3 +21,4 @@ describe WTForum::Session do
     end
   end
 end
+

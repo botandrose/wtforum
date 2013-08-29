@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 module WTForum
   class Session
     def self.create user_id
@@ -30,3 +28,4 @@ module WTForum
     end
   end
 end
+
