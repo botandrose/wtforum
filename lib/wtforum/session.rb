@@ -1,7 +1,7 @@
 class WTForum
   class Session
     def self.create wtforum, user_id
-      uri = create_uri(wtforum, user_id)
+      uri = wtforum.create_session_uri(user_id)
       page = Mechanize.new.get(uri)
       auth_token = WTForum.extract_value(:authtoken, from: page.body)
       new(wtforum, auth_token)
@@ -19,14 +19,6 @@ class WTForum
     end
 
     attr_reader :wtforum, :token
-
-    private
-
-    def self.create_uri wtforum, user_id
-      uri = wtforum.base_api_uri(userid: user_id)
-      uri.path = "/register/setauthtoken"
-      uri
-    end
   end
 end
 
