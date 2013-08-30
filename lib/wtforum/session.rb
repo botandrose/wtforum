@@ -1,7 +1,6 @@
 class WTForum
   class Session
-    def self.create wtforum, user_id
-      response = wtforum.create_session(user_id)
+    def self.create wtforum, response
       auth_token = WTForum.extract_value(:authtoken, from: response.body)
       new(wtforum, auth_token)
     rescue WTForumError => e

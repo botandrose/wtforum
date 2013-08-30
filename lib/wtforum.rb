@@ -30,25 +30,60 @@ class WTForum
   def create_session user_id
     uri = base_api_uri(userid: user_id)
     uri.path = "/register/setauthtoken"
-    agent.get uri
+    response = agent.get uri
+    Session.create self, response
   end
 
   def create_user attributes
+    defaults = { pw: Digest::MD5.hexdigest(attributes.to_s) }
+    attributes[:member] ||= attributes.delete(:username)
+    attributes[:field276177] ||= attributes.delete(:gender)
+    attributes[:field276178] ||= attributes.delete(:location)
+    attributes[:field276179] ||= attributes.delete(:about)
+    attributes.reverse_merge! defaults
+
     uri = base_api_uri(attributes)
     uri.path = "/register/create_account"
-    agent.get uri
+    response = agent.get uri
+    User.create self, response, attributes
   end
 
   def find_user user_id
-    authorized_agent.get uri(path: "/register/register", query: "edit=1&userid=#{user_id}")
+    response = authorized_agent.get uri(path: "/register/register", query: "edit=1&userid=#{user_id}")
+    raise User::NotFound if response.body.include?("Error: The specified account was not found")
+
+    body = Nokogiri::HTML.parse(response.body)
+    attributes = {
+      id: user_id,
+      member: body.css(".tables td:contains('Username:') + td input").first["value"],
+      email: body.css(".tables td:contains('Email Address:') + td").first.text.split(" - ").first,
+      name: body.css(".tables td:contains('Full Name:') + td input").first["value"],
+      field276177: body.css(".tables select[name='field276177'] option[selected]").first.try(:text).try(:strip),
+      field276178: body.css(".tables input[name='field276178']").first["value"],
+      field276179: body.css(".tables textarea[name='field276179']").first.text
+    }
+    User.new(self, attributes)
   end
 
   def find_user_by_username username
-    authorized_agent.get uri(path: "/register", query: "action=members&search=true&s_username=#{username}")
+    response = authorized_agent.get uri(path: "/register", query: "action=members&search=true&s_username=#{username}")
+    body = Nokogiri::HTML.parse(response.body)
+
+    # scrape markup: <a href="/profile/1234567" title="View profile">username\t\n</a>
+    # search returns partial matches :( so find the exact match.
+    # hopefully there aren't more than 50 matches!
+    link = body.css("a[title='View profile']:contains('#{username}')").find do |a|
+      a.text.strip == username
+    end
+
+    link or raise User::NotFound
+
+    id = link["href"].split("/").last
+    find_user(id)
   end
 
   def edit_user user_id
-    find_user(user_id)
+    response = authorized_agent.get uri(path: "/register/register", query: "edit=1&userid=#{user_id}")
   end
 
   def edit_user_username user_id
@@ -60,7 +95,9 @@ class WTForum
   end
 
   def count_users
-    agent.get uri(path: "/register/members")
+    response = agent.get uri(path: "/register/members")
+    count = response.body.match(/Members\s+\(([\d,]+)\)/m)[1]
+    count.gsub(",", "").to_i
   end
 
   def destroy_user user_id

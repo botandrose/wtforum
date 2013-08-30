@@ -8,16 +8,16 @@ describe WTForum::User, vcr: true do
       user = nil
 
       lambda {
-        user = WTForum::User.create(wtforum,
+        user = wtforum.create_user(
           username: "wtforum_test_user",
           email: "wtforum_test_user@example.com",
           name: "Test User",
           gender: "Male",
           location: "Portland, Oregon, USA",
           about: "I am a test user")
-      }.should change { WTForum::User.count(wtforum) }.by(1)
+      }.should change { wtforum.count_users }.by(1)
 
-      user = WTForum::User.find(wtforum, user.id)
+      user = wtforum.find_user(user.id)
       user.username.should == "wtforum_test_user"
       user.email.should == "wtforum_test_user@example.com"
       user.name.should == "Test User"
@@ -33,7 +33,7 @@ describe WTForum::User, vcr: true do
         location: "Vancouver, BC, Canada",
         about: "I am an updated test user")
 
-      user = WTForum::User.find_by_username(wtforum, "wtforum_test_user_2")
+      user = wtforum.find_user_by_username("wtforum_test_user_2")
       user.username.should == "wtforum_test_user_2"
       user.email.should == "wtforum_test_user_2@example.com"
       user.name.should == "Test User 2"
@@ -43,16 +43,16 @@ describe WTForum::User, vcr: true do
 
     ensure
       lambda {
-        WTForum::User.destroy(wtforum, user.id) rescue nil or
-          WTForum::User.find_by_username(wtforum, "wtforum_test_user").destroy rescue nil or
-          WTForum::User.find_by_username(wtforum, "wtforum_test_user_2").destroy rescue nil
-      }.should change { WTForum::User.count(wtforum) }.by(-1)
+        wtforum.destroy_user(user.id) rescue nil or
+          wtforum.find_user_by_username("wtforum_test_user").destroy rescue nil or
+          wtforum.find_user_by_username("wtforum_test_user_2").destroy rescue nil
+      }.should change { wtforum.count_users }.by(-1)
     end
   end
 
   it "raises an exception when a user is not found" do
     lambda {
-      WTForum::User.find(wtforum, 0)
+      wtforum.find_user(0)
     }.should raise_exception(WTForum::User::NotFound)
   end
 end
