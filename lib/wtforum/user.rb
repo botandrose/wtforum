@@ -11,19 +11,18 @@ class WTForum
       attributes[:field276178] ||= attributes.delete(:location)
       attributes[:field276179] ||= attributes.delete(:about)
       attributes.reverse_merge! defaults
-      uri = wtforum.create_user_uri(attributes)
 
-      page = wtforum.agent.get(uri)
-      user_id = WTForum.extract_value(:userid, :from => page.body)
+      response = wtforum.create_user(attributes)
+      user_id = WTForum.extract_value(:userid, from: response.body)
       attributes[:id] = user_id.to_i
       new(wtforum, attributes)
     end
 
     def self.find wtforum, user_id
-      page = wtforum.authorized_agent.get(wtforum.find_user_uri(user_id))
-      raise NotFound if page.body.include?("Error: The specified account was not found")
+      response = wtforum.find_user(user_id)
+      raise NotFound if response.body.include?("Error: The specified account was not found")
 
-      body = Nokogiri::HTML.parse(page.body)
+      body = Nokogiri::HTML.parse(response.body)
       attributes = {
         id: user_id,
         member: body.css(".tables td:contains('Username:') + td input").first["value"],
@@ -37,7 +36,7 @@ class WTForum
     end
 
     def self.find_by_username wtforum, username
-      page = wtforum.authorized_agent.get(wtforum.find_user_by_username_uri(username))
+      page = wtforum.find_user_by_username(username)
       body = Nokogiri::HTML.parse(page.body)
 
       # scrape markup: <a href="/profile/1234567" title="View profile">username\t\n</a>
@@ -58,12 +57,12 @@ class WTForum
     end
 
     def self.destroy wtforum, user_id
-      wtforum.authorized_agent.get wtforum.destroy_user_uri(user_id)
+      wtforum.destroy_user(user_id)
       true
     end
 
     def self.count wtforum
-      page = wtforum.agent.get(wtforum.count_users_uri)
+      page = wtforum.count_users
       count = page.body.match(/Members\s+\(([\d,]+)\)/m)[1]
       count.gsub(",", "").to_i
     end
@@ -79,7 +78,7 @@ class WTForum
     end
 
     def save!
-      wtforum.authorized_agent.get(wtforum.edit_uri(id)) do |page|
+      wtforum.edit_user(id).tap do |page|
         form = page.forms.first
         form["name"] = name
         form["field276177"] = field276177
@@ -87,12 +86,12 @@ class WTForum
         form["field276179"] = field276179
         form.submit
       end
-      wtforum.authorized_agent.get(wtforum.edit_user_username_uri(id)) do |page|
+      wtforum.edit_user_username(id).tap do |page|
         form = page.forms.first
         form["new_username"] = username
         form.submit
       end
-      wtforum.authorized_agent.get(wtforum.edit_user_email_uri(id)) do |page|
+      wtforum.edit_user_email(id).tap do |page|
         form = page.forms.first
         form["email"] = email
         form.submit

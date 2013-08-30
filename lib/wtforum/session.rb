@@ -1,9 +1,8 @@
 class WTForum
   class Session
     def self.create wtforum, user_id
-      uri = wtforum.create_session_uri(user_id)
-      page = Mechanize.new.get(uri)
-      auth_token = WTForum.extract_value(:authtoken, from: page.body)
+      response = wtforum.create_session(user_id)
+      auth_token = WTForum.extract_value(:authtoken, from: response.body)
       new(wtforum, auth_token)
     rescue WTForumError => e
       if e.message == "Error: The specified user does not exist."

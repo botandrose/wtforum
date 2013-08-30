@@ -27,45 +27,47 @@ class WTForum
     end
   end
 
-  def create_session_uri user_id
+  def create_session user_id
     uri = base_api_uri(userid: user_id)
     uri.path = "/register/setauthtoken"
-    uri
+    agent.get uri
   end
 
-  def create_user_uri attributes
+  def create_user attributes
     uri = base_api_uri(attributes)
     uri.path = "/register/create_account"
-    uri
+    agent.get uri
   end
 
-  def find_user_uri user_id
-    uri path: "/register/register", query: "edit=1&userid=#{user_id}"
+  def find_user user_id
+    authorized_agent.get uri(path: "/register/register", query: "edit=1&userid=#{user_id}")
   end
 
-  def find_user_by_username_uri username
-    uri path: "/register", query: "action=members&search=true&s_username=#{username}"
+  def find_user_by_username username
+    authorized_agent.get uri(path: "/register", query: "action=members&search=true&s_username=#{username}")
   end
 
-  def edit_uri user_id
-    find_user_uri(user_id)
+  def edit_user user_id
+    find_user(user_id)
   end
 
-  def edit_user_username_uri user_id
-    uri path: "/register/edit_username", query: "userid=#{user_id}"
+  def edit_user_username user_id
+    authorized_agent.get uri(path: "/register/edit_username", query: "userid=#{user_id}")
   end
 
-  def edit_user_email_uri user_id
-    uri path: "/register/edit_password", query: "userid=#{user_id}"
+  def edit_user_email user_id
+    authorized_agent.get uri(path: "/register/edit_password", query: "userid=#{user_id}")
   end
 
-  def count_users_uri
-    uri path: "/register/members"
+  def count_users
+    agent.get uri(path: "/register/members")
   end
 
-  def destroy_user_uri user_id
-    uri path: "/register/delete", query: "mem_userid=#{user_id}"
+  def destroy_user user_id
+    authorized_agent.get uri(path: "/register/delete", query: "mem_userid=#{user_id}")
   end
+
+  private
 
   def authorized_agent
     @authorized_agent ||= begin
@@ -78,8 +80,6 @@ class WTForum
   def agent
     Mechanize.new
   end
-
-  private
 
   def base_uri
     URI("http://#{domain}")
