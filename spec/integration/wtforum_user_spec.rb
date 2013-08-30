@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe WTForum::User do
+describe WTForum::User, vcr: true do
   let(:wtforum) { test_wtforum }
 
   it "can CRUD users" do

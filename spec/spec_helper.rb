@@ -1,4 +1,11 @@
 require "wtforum"
+require "vcr"
+
+VCR.configure do |c|
+  c.cassette_library_dir = "spec/fixtures/vcr_cassettes"
+  c.hook_into :webmock
+  c.configure_rspec_metadata!
+end
 
 begin
   require "./spec/support/credentials.rb"
@@ -20,3 +27,4 @@ def test_wtforum
     admin_username: WTFORUM_ADMIN_USERNAME,
     admin_password: WTFORUM_ADMIN_PASSWORD
 end
+

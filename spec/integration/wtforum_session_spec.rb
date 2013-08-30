@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe WTForum::Session do
+describe WTForum::Session, vcr: true do
   let(:wtforum) { test_wtforum }
 
   context "when user exists" do

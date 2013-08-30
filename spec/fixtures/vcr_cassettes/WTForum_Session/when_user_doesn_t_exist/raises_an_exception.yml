@@ -1,0 +1,67 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://forums.complexityexplorer.org/register/setauthtoken?apikey=pteGzAPZyr4&userid=1
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip,deflate,identity
+      Accept:
+      - '*/*'
+      User-Agent:
+      - Mechanize/2.5.1 Ruby/2.0.0p195 (http://github.com/tenderlove/mechanize/)
+      Accept-Charset:
+      - ISO-8859-1,utf-8;q=0.7,*;q=0.7
+      Accept-Language:
+      - en-us,en;q=0.5
+      Host:
+      - forums.complexityexplorer.org
+      Connection:
+      - keep-alive
+      Keep-Alive:
+      - 300
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, no-store, must-revalidate
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - text/xml
+      Date:
+      - Fri, 30 Aug 2013 18:15:04 GMT
+      Expires:
+      - Nov, 8 1991 00:00:01 GMT
+      P3p:
+      - CP='NOI DSP COR NID CURa TAIi OUR BUS INT PRE'; policyref='http://forums.complexityexplorer.org/w3c/p3p.xml';
+      Pragma:
+      - no-cache
+      Server:
+      - nginx/1.0.10
+      Set-Cookie:
+      - hascookies=1; path=/; domain=.forums.complexityexplorer.org;
+      - lastvisit=1377886504; path=/; domain=.forums.complexityexplorer.org; expires=Wed,
+        25-Aug-2020 00:00:00 GMT;
+      - newvisit=1377886504; path=/; domain=.forums.complexityexplorer.org; expires=Wed,
+        25-Aug-2020 00:00:00 GMT;
+      Vary:
+      - Accept-Encoding
+      Content-Length:
+      - '123'
+      Connection:
+      - keep-alive
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        H4sIAAAAAAAAA1XMQQ6CQAxG4as0sxd0Z0gZVnoCPABhfrGJtKRFwvENGxOX
+        b/E97vb5TRs8xLRNl+qcCDpaEZ3a9Ojvp2vqMjtiMQ1khrv5jIhhQr4d0VD/
+        AsWCUZ6CQp+AUzEEqa2EXWKtuP5zXP+GX3LWZ2qBAAAA
+    http_version: 
+  recorded_at: Fri, 30 Aug 2013 18:15:04 GMT
+recorded_with: VCR 2.5.0

@@ -1,11 +1,9 @@
-require "securerandom"
-
 class WTForum
   class User
     class NotFound < StandardError; end
 
     def self.create wtforum, attributes
-      defaults = { pw: SecureRandom.hex(10) }
+      defaults = { pw: Digest::MD5.hexdigest(attributes.to_s) }
       attributes[:member] ||= attributes.delete(:username)
       attributes[:field276177] ||= attributes.delete(:gender)
       attributes[:field276178] ||= attributes.delete(:location)
