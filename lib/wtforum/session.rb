@@ -17,6 +17,10 @@ class WTForum
     end
 
     attr_reader :wtforum, :token
+
+    def auth_token_image_url
+      "http://#{wtforum.domain}/register/dologin?authtoken=#{token}"
+    end
   end
 end
 
