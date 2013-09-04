@@ -9,7 +9,7 @@ class WTForum
     end
 
     def self.update wtforum, user_id, attributes
-      find(wtforum, user_id).update_attributes!(attributes)
+      wtforum.find_user(user_id).update_attributes!(attributes)
     end
 
     def self.destroy wtforum, user_id

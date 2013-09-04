@@ -35,7 +35,7 @@ http_interactions:
       Content-Type:
       - text/xml
       Date:
-      - Fri, 30 Aug 2013 18:15:04 GMT
+      - Wed, 04 Sep 2013 18:33:52 GMT
       Expires:
       - Nov, 8 1991 00:00:01 GMT
       P3p:
@@ -46,9 +46,9 @@ http_interactions:
       - nginx/1.0.10
       Set-Cookie:
       - hascookies=1; path=/; domain=.forums.complexityexplorer.org;
-      - lastvisit=1377886504; path=/; domain=.forums.complexityexplorer.org; expires=Wed,
+      - lastvisit=1378319632; path=/; domain=.forums.complexityexplorer.org; expires=Wed,
         25-Aug-2020 00:00:00 GMT;
-      - newvisit=1377886504; path=/; domain=.forums.complexityexplorer.org; expires=Wed,
+      - newvisit=1378319632; path=/; domain=.forums.complexityexplorer.org; expires=Wed,
         25-Aug-2020 00:00:00 GMT;
       Vary:
       - Accept-Encoding
@@ -63,5 +63,5 @@ http_interactions:
         b/E97vb5TRs8xLRNl+qcCDpaEZ3a9Ojvp2vqMjtiMQ1khrv5jIhhQr4d0VD/
         AsWCUZ6CQp+AUzEEqa2EXWKtuP5zXP+GX3LWZ2qBAAAA
     http_version: 
-  recorded_at: Fri, 30 Aug 2013 18:15:04 GMT
+  recorded_at: Wed, 04 Sep 2013 18:33:52 GMT
 recorded_with: VCR 2.5.0
