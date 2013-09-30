@@ -55,5 +55,56 @@ describe WTForum::User, vcr: true do
       wtforum.find_user(0)
     }.should raise_exception(WTForum::User::NotFound)
   end
+
+  it "raises an exception when a username is already taken and the retry option is false" do
+    begin
+      wtforum.create_user(
+        username: "wtforum_test_user",
+        email: "wtforum_test_user@example.com",
+        name: "Test User",
+        gender: "Male",
+        location: "Portland, Oregon, USA",
+        about: "I am a test user")
+      lambda {
+        wtforum.create_user(
+          username: "wtforum_test_user",
+          email: "some_other_wtforum_test_user@example.com",
+          name: "Some Other Test User",
+          gender: "Male",
+          location: "Portland, Oregon, USA",
+          about: "I am another test user",
+          retry: false)
+      }.should raise_exception(WTForum::User::UsernameAlreadyTaken)
+
+    ensure
+      wtforum.find_user_by_username("wtforum_test_user").destroy rescue nil
+    end
+  end
+
+  it "retries with successive usernames if one is already taken" do
+    begin
+      wtforum.create_user(
+        username: "wtforum_test_user",
+        email: "wtforum_test_user@example.com",
+        name: "Test User",
+        gender: "Male",
+        location: "Portland, Oregon, USA",
+        about: "I am a test user")
+
+      wtforum_user = wtforum.create_user(
+        username: "wtforum_test_user",
+        email: "some_other_wtforum_test_user@example.com",
+        name: "Some Other Test User",
+        gender: "Male",
+        location: "Portland, Oregon, USA",
+        about: "I am another test user")
+
+      wtforum_user.username.should == "wtforum_test_user1"
+
+    ensure
+      wtforum.find_user_by_username("wtforum_test_user").destroy rescue nil
+      wtforum.find_user_by_username("wtforum_test_user1").destroy rescue nil
+    end
+  end
 end
 

@@ -35,6 +35,9 @@ class WTForum
   end
 
   def create_user attributes
+    keep_trying = attributes.has_key?(:retry) ? attributes.delete(:retry) : true
+    original_name = attributes[:username]
+
     defaults = { pw: Digest::MD5.hexdigest(attributes.to_s) }
     attributes[:member] ||= attributes.delete(:username)
     attributes[:field276177] ||= attributes.delete(:gender)
@@ -42,10 +45,26 @@ class WTForum
     attributes[:field276179] ||= attributes.delete(:about)
     attributes.reverse_merge! defaults
 
-    uri = base_api_uri(attributes)
-    uri.path = "/register/create_account"
-    response = agent.get uri
-    User.create self, response, attributes
+    begin
+      uri = base_api_uri(attributes)
+      uri.path = "/register/create_account"
+      response = agent.get uri
+      User.create self, response, attributes
+
+    rescue WTForum::WTForumError => e
+      if e.message =~ /^Error: The username "(.+?)" has already been taken\.$/
+        if keep_trying
+          index = attributes[:member].sub(original_name,"").to_i
+          new_username = "#{original_name}#{index+1}"
+          attributes[:member] = new_username
+          retry
+        else
+          raise User::UsernameAlreadyTaken.new(e.message)
+        end
+      else
+        raise
+      end
+    end
   end
 
   def find_user user_id

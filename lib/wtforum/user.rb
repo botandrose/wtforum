@@ -1,6 +1,7 @@
 class WTForum
   class User
     class NotFound < StandardError; end
+    class UsernameAlreadyTaken < StandardError; end
 
     def self.create wtforum, response, attributes
       user_id = WTForum.extract_value(:userid, from: response.body)
