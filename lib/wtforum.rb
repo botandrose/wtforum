@@ -61,6 +61,8 @@ class WTForum
         else
           raise User::UsernameAlreadyTaken.new(e.message)
         end
+      elsif e.message =~ /Error: It looks like you are already registered as "(.+?)" with that email address./
+        find_user_by_username($1)
       else
         raise
       end

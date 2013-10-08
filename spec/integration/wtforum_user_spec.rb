@@ -106,5 +106,30 @@ describe WTForum::User, vcr: true do
       wtforum.find_user_by_username("wtforum_test_user1").destroy rescue nil
     end
   end
+
+  it "returns existing user if one already exists" do
+    begin
+      wtforum.create_user(
+        username: "wtforum_test_user",
+        email: "wtforum_test_user@example.com",
+        name: "Test User",
+        gender: "Male",
+        location: "Portland, Oregon, USA",
+        about: "I am a test user")
+
+      wtforum_user = wtforum.create_user(
+        username: "wtforum_test_user",
+        email: "wtforum_test_user@example.com",
+        name: "Test User",
+        gender: "Male",
+        location: "Portland, Oregon, USA",
+        about: "I am a test user")
+
+      wtforum_user.username.should == "wtforum_test_user"
+
+    ensure
+      wtforum.find_user_by_username("wtforum_test_user").destroy rescue nil
+    end
+  end
 end
 
