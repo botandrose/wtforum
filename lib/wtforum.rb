@@ -81,8 +81,8 @@ class WTForum
       email: body.css(".tables td:contains('Email Address:') + td").first.text.split(" - ").first,
       name: body.css(".tables td:contains('Full Name:') + td input").first["value"],
       field276177: body.css(".tables select[name='field276177'] option[selected]").first.try(:text).try(:strip),
-      field276178: body.css(".tables input[name='field276178']").first["value"],
-      field276179: body.css(".tables textarea[name='field276179']").first.text
+      field276178: body.css(".tables input[name='field276178']").first.try(:[], "value"),
+      field276179: body.css(".tables textarea[name='field276179']").first.try(:text)
     }
     User.new(self, attributes)
   end
