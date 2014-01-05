@@ -5,6 +5,7 @@ require "nokogiri"
 
 require "wtforum/user"
 require "wtforum/session"
+require "wtforum/admin"
 
 class WTForum
   class WTForumError < StandardError; end
