@@ -63,7 +63,7 @@ class WTForum
           raise User::UsernameAlreadyTaken.new(e.message)
         end
       elsif e.message =~ /Error: It looks like you are already registered as "(.+?)" with that email address./
-        find_user_by_username($1)
+        find_user_by_username_and_email($1, attributes[:email])
       else
         raise
       end
@@ -87,8 +87,10 @@ class WTForum
     User.new(self, attributes)
   end
 
-  def find_user_by_username username
-    response = authorized_agent.get uri(path: "/register", query: "action=members&search=true&s_username=#{username}")
+  def find_user_by_username username, email=nil
+    query = "action=members&search=true&s_username=#{username}"
+    query += "&s_email=#{email}" if email
+    response = authorized_agent.get uri(path: "/register", query: query)
     body = Nokogiri::HTML.parse(response.body)
 
     # scrape markup: <a href="/profile/1234567" title="View profile">username\t\n</a>
@@ -103,6 +105,8 @@ class WTForum
     id = link["href"].split("/").last
     find_user(id)
   end
+
+  alias_method :find_user_by_username_and_email, :find_user_by_username
 
   def edit_user user_id
     response = authorized_agent.get uri(path: "/register/register", query: "edit=1&userid=#{user_id}")
